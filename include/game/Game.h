@@ -20,6 +20,9 @@
 #define HPL_GAME_H
 
 #include "system/SystemTypes.h"
+#include "IL_Utils.h"
+
+using namespace openil;
 
 namespace hpl {
 
