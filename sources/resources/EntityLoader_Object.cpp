@@ -518,6 +518,8 @@ namespace hpl {
 		{
 			iLight3D* pLight = mpMesh->CreateLightInWorld(asName,mpMesh->GetLight(i),mpEntity,apWorld);
 			if(pLight) mvLights.push_back(pLight);
+
+			Log("Light position: %s\n", pLight->GetLightPosition().ToString());
 		}
 		
 		//Iterate light elements

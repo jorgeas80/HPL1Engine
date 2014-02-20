@@ -340,7 +340,6 @@ namespace hpl {
 	{
 		//Log line that ends user init.
 		Log("--------------------------------------------------------\n\n");
-		
 		bool bDone = false;
 		double fNumOfTimes=0;
 		double fMediumTime=0;
