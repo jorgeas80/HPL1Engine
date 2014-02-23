@@ -152,9 +152,9 @@ namespace hpl {
 			// Lights
 			if((sType == "LIGHT" || sValue == "library_lights") && apColladaLightVec)
 			{
-				///Log("Loading type: %s\n",sType.c_str());
+				Log("Loading type: %s\n",sType.c_str());
 				LoadLights(pLibraryElem,*apColladaLightVec);
-				//Log(" --- \n");
+				Log(" --- \n");
 			}	
 
 			pLibraryElem = pLibraryElem->NextSiblingElement();

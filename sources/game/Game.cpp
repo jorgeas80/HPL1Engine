@@ -35,6 +35,8 @@
 #include "system/LowLevelSystem.h"
 #include "game/LowLevelGameSetup.h"
 
+#include "IL_Utils.h"
+
 namespace hpl {
 
 	//////////////////////////////////////////////////////////////////////////
@@ -255,6 +257,11 @@ namespace hpl {
 		//Init haptic
 		if(mpHaptic) mpHaptic->Init(mpResources);
 
+		// Init OpenIL, if needed
+		mbUseOpenIL = aVars.GetBool("UseLightEngine", false);
+		if (mbUseOpenIL)
+			openil::initLightEngine();
+
 		Log("Initializing Game Module\n");
 		Log("--------------------------------------------------------\n");
 		//Create the updatehandler
@@ -320,6 +327,9 @@ namespace hpl {
 		hplDelete(mpPhysics);
 		hplDelete(mpAI);
 		hplDelete(mpSystem);
+
+		if (mbUseOpenIL)
+			openil::endLightEngine();
 		
 		Log(" Deleting game setup provided by user\n");
 		hplDelete(mpGameSetup);

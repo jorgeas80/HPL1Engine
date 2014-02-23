@@ -20,9 +20,6 @@
 #define HPL_GAME_H
 
 #include "system/SystemTypes.h"
-#include "IL_Utils.h"
-
-using namespace openil;
 
 namespace hpl {
 
@@ -192,6 +189,8 @@ namespace hpl {
 		bool GetLimitFPS(){ return mbLimitFPS;}
 
 	private:
+		bool mbUseOpenIL;
+
 		bool mbGameIsDone;
 
 		bool mbRenderOnce;

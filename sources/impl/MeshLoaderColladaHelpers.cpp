@@ -635,9 +635,9 @@ namespace hpl {
 				}
 			}
 
-			//Log("Loaded light '%s', type '%s', color: %f %f %f\n", Light.msId.c_str(), 
-			//				Light.msType.c_str(),
-			//				Light.mDiffuseColor.r,Light.mDiffuseColor.g,Light.mDiffuseColor.b);
+			Log("Loaded light '%s', type '%s', color: %f %f %f\n", Light.msId.c_str(), 
+							Light.msType.c_str(),
+							Light.mDiffuseColor.r,Light.mDiffuseColor.g,Light.mDiffuseColor.b);
 
 			avColladaLightVec.push_back(Light);
 		}
