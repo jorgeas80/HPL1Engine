@@ -554,7 +554,7 @@ namespace hpl {
 
 	
 	//-----------------------------------------------------------------------
-
+	// Check lighting elements at http://www.khronos.org/files/collada_reference_card_1_4.pdf
 	void cMeshLoaderCollada::LoadLights(TiXmlElement* apRootElem, tColladaLightVec &avColladaLightVec)
 	{
 		TiXmlElement* pLightElem = apRootElem->FirstChildElement("light");
