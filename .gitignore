@@ -194,3 +194,6 @@ Desktop.ini
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
+HPL.sln.old
+HPL.vcxproj
+HPL.vcxproj.filters
