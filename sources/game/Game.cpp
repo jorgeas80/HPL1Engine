@@ -259,8 +259,16 @@ namespace hpl {
 
 		// Init OpenIL, if needed
 		mbUseOpenIL = aVars.GetBool("UseLightEngine", false);
-		if (mbUseOpenIL)
+		if (mbUseOpenIL) {
 			openil::initLightEngine();
+			Log("Initializing OpenIL Light Engine\n");
+		}
+
+		// Check
+		if (!openil::isEnableLightEngine()) 
+			Log("Something wrong happened. OpenIL not initialized\n");
+
+		Log("--------------------------------------------------------\n\n");
 
 		Log("Initializing Game Module\n");
 		Log("--------------------------------------------------------\n");
