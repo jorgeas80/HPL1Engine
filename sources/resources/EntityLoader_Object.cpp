@@ -54,6 +54,8 @@
 #include "haptic/LowLevelHaptic.h"
 #include "haptic/HapticShape.h"
 
+#include "IL_LightSource.h"
+
 namespace hpl {
 
 	//////////////////////////////////////////////////////////////////////////
@@ -520,6 +522,19 @@ namespace hpl {
 			if(pLight) mvLights.push_back(pLight);
 
 			Log("Light position: %s\n", pLight->GetLightPosition().ToString());
+
+			/*
+			openil::IL_ref_ptr<openil::IL_LightSource> spLight = new openil::IL_LightSource();
+
+			cVector3f vLightPos = pLight->GetLocalPosition();
+			cColor lightColor = pLight->GetDiffuseColor();
+
+			spLight->setLight(openil::IL_Color(lightColor.r, lightColor.g, lightColor.b, 0));
+			*/
+
+			// TODO: Translate light position to room position, and construct a point light or spot light, depending on the light type
+
+			// TODO: Store the array of openil lights anywhere
 		}
 		
 		//Iterate light elements
