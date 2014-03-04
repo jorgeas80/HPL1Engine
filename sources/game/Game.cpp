@@ -371,8 +371,7 @@ namespace hpl {
 		
 		//reset the mouse, really reset the damn thing :P
 		for(int i=0;i<10;i++) mpInput->GetMouse()->Reset();
-		
-		
+
 		Log("Game Running\n");
 		Log("--------------------------------------------------------\n");
 
