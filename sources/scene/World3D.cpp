@@ -575,7 +575,7 @@ namespace hpl {
 			mpPortalContainer->Add(pLight, false);
 
 		pLight->SetWorld3D(this);
-		
+
 		return pLight;
 	}
 

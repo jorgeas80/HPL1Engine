@@ -64,6 +64,7 @@ namespace hpl {
 
 	//-----------------------------------------------------------------------
 
+	// afTimeStep is the amount of seconds the new status should last
 	void iLight::UpdateLight(float afTimeStep)
 	{	
 		/////////////////////////////////////////////
@@ -155,10 +156,11 @@ namespace hpl {
 			mfFlickerTime += afTimeStep;
 		}
 
-		Log("Time: %f Length: %f FadeTime: %f Color: (%f %f %f %f)\n",mfFlickerTime, mfFlickerStateLength,
+		Log("Time: %f Length: %f FadeTime: %f Color: (%f %f %f %f) Position: %s\n",mfFlickerTime, mfFlickerStateLength,
 											mfFadeTime,
 											mDiffuseColor.r,mDiffuseColor.g,
-											mDiffuseColor.b,mDiffuseColor.a);
+											mDiffuseColor.b,mDiffuseColor.a,
+											GetLightPosition().ToString());
 	}
 
 	//-----------------------------------------------------------------------

@@ -457,9 +457,12 @@ namespace hpl {
 
 	//-----------------------------------------------------------------------
 
+
 	void iLight3D::UpdateLogic(float afTimeStep)
 	{
+		Log("++++++++++++++++++++++++++++++++++++++ Update light 3D: %s\n", GetName().c_str());
 		UpdateLight(afTimeStep);
+
 		if(mfFadeTime>0 || mbFlickering)
 		{
 			mbUpdateBoundingVolume = true;
@@ -467,6 +470,8 @@ namespace hpl {
 			//This is so that the render container is updated.
 			SetTransformUpdated();
 		}
+
+		Log("++++++++++++++++++++++++++++++++++++++\n");
 	}
 
 	//-----------------------------------------------------------------------

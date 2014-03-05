@@ -20,10 +20,6 @@
 #define HPL_GAME_H
 
 #include "system/SystemTypes.h"
-#include "IL_LightSource.h"
-
-typedef std::list<openil::IL_ref_ptr<openil::IL_LightSource>> tOpenILLightList;
-typedef tOpenILLightList::iterator tOpenILLightListIt;
 
 
 namespace hpl {
@@ -231,10 +227,6 @@ namespace hpl {
 		cAI *mpAI;
 		cHaptic *mpHaptic;
 		cGui *mpGui;
-
-		// OpenIL light sources
-		tOpenILLightList mlstOpenILLights;
-
 	};
 
 };

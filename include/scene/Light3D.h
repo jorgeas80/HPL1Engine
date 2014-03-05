@@ -26,6 +26,8 @@
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Renderable.h"
 
+#include "IL_LightSource.h"
+
 class TiXmlElement;
 
 namespace hpl {
