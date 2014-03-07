@@ -66,6 +66,8 @@ namespace hpl {
 		mlSectorVisibilityCount =-1;
 
 		for(int i=0; i<3;++i)mvTempTextures[i]=NULL;
+
+		mOpenILLight = new openil::IL_LightSource;
 	}
 
 	//-----------------------------------------------------------------------
@@ -470,6 +472,20 @@ namespace hpl {
 			//This is so that the render container is updated.
 			SetTransformUpdated();
 		}
+
+		cColor lightColor = GetDiffuseColor();
+		openil::IL_Color openILLightColor;
+		openILLightColor.setColorf(lightColor.r,lightColor.g, lightColor.b, 0);
+
+		// Set this color to openil light
+		mOpenILLight->setLight(openILLightColor);
+
+		// TODO: Translate world position to openil position!!
+		mOpenILLight->setPointLight(openil::IL_Vector3D(0, 0, 0), GetFarAttenuation());
+
+		Log("TODO: Get current position, radius = %f\n", GetFarAttenuation());	
+
+		mOpenILLight->play();
 
 		Log("++++++++++++++++++++++++++++++++++++++\n");
 	}

@@ -50,6 +50,9 @@ namespace hpl {
 		virtual void LoadFromSaveData(iSaveData *apSaveData);
 		virtual void SaveDataSetup(cSaveObjectHandler *apSaveObjectHandler, cGame *apGame);
 
+		// To call OpenIL specific methods
+		void UpdateLogic(float afTimeStep);
+
 	private:
 		cSectorVisibilityContainer* CreateSectorVisibility();
 		void UpdateBoundingVolume();

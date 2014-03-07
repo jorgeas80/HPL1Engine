@@ -136,4 +136,32 @@ namespace hpl {
 
 	//-----------------------------------------------------------------------
 
+	// THIS METHOD IS NEVER CALLED, REALLY. WE DON'T NEED IT
+	void cLight3DPoint::UpdateLogic(float afTimeStep)
+	{
+		// Call parent first
+		iLight3D::UpdateLogic(afTimeStep);
+
+		Log("++++++++++++++++++++++++++++++++++++++ Update OPENIL light 3D point: %s\n", GetName().c_str());
+
+		// Calculate the color of the light
+		cColor lightColor = GetDiffuseColor();
+		openil::IL_Color openILLightColor;
+		openILLightColor.setColorf(lightColor.r,lightColor.g, lightColor.b, 0);
+
+		// Set this color to openil light
+		mOpenILLight->setLight(openILLightColor);
+
+		// TODO: Translate world position to openil position!!
+		mOpenILLight->setPointLight(openil::IL_Vector3D(0, 0, 0), GetNearAttenuation());
+
+		Log("TODO: Get current position, radius = %f\n", GetNearAttenuation());	
+
+		mOpenILLight->play();
+		
+		Log("++++++++++++++++++++++++++++++++++++++\n");
+	}
+
+	//-----------------------------------------------------------------------
+
 }

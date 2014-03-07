@@ -219,6 +219,8 @@ namespace hpl {
 		cSectorVisibilityContainer *mpVisSectorCont;
 
 		unsigned int *mpIndexArray;
+
+		openil::IL_ref_ptr<openil::IL_LightSource> mOpenILLight;
 	};
 
 	typedef std::list<iLight3D*> tLight3DList;
