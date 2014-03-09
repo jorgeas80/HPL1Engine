@@ -34,6 +34,8 @@
 #include "scene/SectorVisibility.h"
 #include "scene/PortalContainer.h"
 
+#include "IL_Utils.h"
+
 namespace hpl {
 	
 	static const cMatrixf g_mtxTextureUnitFix(	0.5f,0,   0,   0.5f,
@@ -47,7 +49,7 @@ namespace hpl {
 	//////////////////////////////////////////////////////////////////////////
 
 	//-----------------------------------------------------------------------
-	
+	// HERE, YOU DON'T KNOW THE LIGHT POSITION YET!
 	cLight3DSpot::cLight3DSpot(tString asName, cResources *apResources) : iLight3D(asName,apResources)
 	{
 		mbProjectionUpdated = true;
@@ -66,6 +68,9 @@ namespace hpl {
 
 		mfFOV = cMath::ToRad(60.0f);
 		mfAspect = 1.0f;
+
+		// This tutorial can explain these 2 values (See "The projection matrix section)
+		// http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/#The_Model__View_and_Projection_matrices
 		mfFarAttenuation = 100.0f;
 		mfNearClipPlane = 0.1f;
 		
@@ -74,6 +79,13 @@ namespace hpl {
 		m_mtxProjection = cMatrixf::Identity;
 
 		UpdateBoundingVolume();
+
+		mOpenILLight = new openil::IL_LightSource;
+		mOpenILLight->setAttenuationType(openil::LINEAL);
+		mOpenILLight->setLight(openil::IL_Color(mDiffuseColor.r, mDiffuseColor.g, mDiffuseColor.b, 0));
+		mbOpenILLightNeedsUpdate = true;
+
+		Log("Point light %s created\n", asName.c_str());
 	}
 	
 	cLight3DSpot::~cLight3DSpot()
@@ -218,6 +230,31 @@ namespace hpl {
 		if(cMath::CheckCollisionBV(*GetBoundingVolume(), *apBV)==false) return false;
 
 		return GetFrustum()->CollideBoundingVolume(apBV)!= eFrustumCollision_Outside;
+	}
+
+	//-----------------------------------------------------------------------
+
+	void cLight3DSpot::SetMatrix(const cMatrixf& a_mtxTransform)
+	{
+		// Do your stuff, calling parent...
+		iEntity3D::SetMatrix(a_mtxTransform);
+
+		// Now, let's update the OpenIL position
+		cVector3f vOpenILPosition = GetOpenILCoords(GetLightPosition());
+
+		// TODO: Calculate spot direction
+		openil::IL_Vector3D vOpenILDirection(0, 0, 0);
+
+		// Radius must be between 0 and 1000
+		float radius = (GetFarAttenuation() * 1000) / GetFarAttenuation();
+
+		// TODO: OpenIL considers "attenuation" and "radius" differently!
+		mOpenILLight->setSpotLight(openil::IL_Vector3D(vOpenILPosition.x, vOpenILPosition.y, vOpenILPosition.z),
+			radius, vOpenILDirection, mfFOV);
+
+		Log("Spot light set at %s\n", GetLightPosition().ToString());
+
+		mbOpenILLightNeedsUpdate = true;
 	}
 
 	//-----------------------------------------------------------------------

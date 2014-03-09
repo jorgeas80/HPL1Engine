@@ -30,6 +30,8 @@
 #include "scene/SectorVisibility.h"
 #include "scene/PortalContainer.h"
 
+#include "IL_Utils.h"
+
 namespace hpl {
 
 	//////////////////////////////////////////////////////////////////////////
@@ -37,12 +39,44 @@ namespace hpl {
 	//////////////////////////////////////////////////////////////////////////
 
 	//-----------------------------------------------------------------------
-
+	// HERE, YOU DON'T KNOW THE LIGHT POSITION YET!
 	cLight3DPoint::cLight3DPoint(tString asName, cResources *apResources) : iLight3D(asName,apResources)
 	{
 		mLightType = eLight3DType_Point;
 
 		UpdateBoundingVolume();
+
+		mOpenILLight = new openil::IL_LightSource;
+		mOpenILLight->setAttenuationType(openil::LINEAL);
+		mOpenILLight->setLight(openil::IL_Color(mDiffuseColor.r, mDiffuseColor.g, mDiffuseColor.b, 0));
+		mbOpenILLightNeedsUpdate = true;
+
+		Log("Point light %s created\n", asName.c_str());
+	}
+
+	//-----------------------------------------------------------------------
+
+	//////////////////////////////////////////////////////////////////////////
+	// PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////
+		
+	void cLight3DPoint::SetMatrix(const cMatrixf& a_mtxTransform)
+	{
+		// Do your stuff, calling parent...
+		iEntity3D::SetMatrix(a_mtxTransform);
+
+		// Now, let's update the OpenIL position
+		cVector3f vOpenILPosition = GetOpenILCoords(GetLightPosition());
+
+		// Radius must be between 0 and 1000
+		float radius = (GetFarAttenuation() * 1000) / GetFarAttenuation();
+
+		// TODO: OpenIL considers "attenuation" and "radius" differently!
+		mOpenILLight->setPointLight(openil::IL_Vector3D(vOpenILPosition.x, vOpenILPosition.y, vOpenILPosition.z),
+			radius);
+		mbOpenILLightNeedsUpdate = true;
+
+		Log("Point light set at %s\n", GetLightPosition().ToString());
 	}
 
 	//-----------------------------------------------------------------------
@@ -132,34 +166,6 @@ namespace hpl {
 	void cLight3DPoint::SaveDataSetup(cSaveObjectHandler *apSaveObjectHandler, cGame *apGame)
 	{
 		kSaveData_SetupBegin(cLight3DPoint);
-	}
-
-	//-----------------------------------------------------------------------
-
-	// THIS METHOD IS NEVER CALLED, REALLY. WE DON'T NEED IT
-	void cLight3DPoint::UpdateLogic(float afTimeStep)
-	{
-		// Call parent first
-		iLight3D::UpdateLogic(afTimeStep);
-
-		Log("++++++++++++++++++++++++++++++++++++++ Update OPENIL light 3D point: %s\n", GetName().c_str());
-
-		// Calculate the color of the light
-		cColor lightColor = GetDiffuseColor();
-		openil::IL_Color openILLightColor;
-		openILLightColor.setColorf(lightColor.r,lightColor.g, lightColor.b, 0);
-
-		// Set this color to openil light
-		mOpenILLight->setLight(openILLightColor);
-
-		// TODO: Translate world position to openil position!!
-		mOpenILLight->setPointLight(openil::IL_Vector3D(0, 0, 0), GetNearAttenuation());
-
-		Log("TODO: Get current position, radius = %f\n", GetNearAttenuation());	
-
-		mOpenILLight->play();
-		
-		Log("++++++++++++++++++++++++++++++++++++++\n");
 	}
 
 	//-----------------------------------------------------------------------

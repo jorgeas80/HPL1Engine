@@ -127,6 +127,8 @@ namespace hpl {
 		virtual void SetFarAttenuation(float afX);
 		virtual void SetNearAttenuation(float afX);
 
+		void SetDiffuseColor(cColor aColor);
+
 		cVector3f GetLightPosition();
 
 		virtual bool BeginDraw(cRenderSettings *apRenderSettings,iLowLevelGraphics *apLowLevelGraphics);
@@ -185,6 +187,10 @@ namespace hpl {
 		virtual void LoadFromSaveData(iSaveData *apSaveData);
 		virtual void SaveDataSetup(cSaveObjectHandler *apSaveObjectHandler, cGame *apGame);
 
+		// Things OpenIL needs
+		cVector3f GetOpenILCoords(cVector3f hpl1EngineCoords);
+		void FadeTo(const cColor& aCol, float afRadius, float afTime);
+
 	protected:
 		void OnFlickerOff();
 		void OnFlickerOn();
@@ -221,6 +227,7 @@ namespace hpl {
 		unsigned int *mpIndexArray;
 
 		openil::IL_ref_ptr<openil::IL_LightSource> mOpenILLight;
+		bool mbOpenILLightNeedsUpdate;
 	};
 
 	typedef std::list<iLight3D*> tLight3DList;

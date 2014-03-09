@@ -36,6 +36,7 @@
 #include "graphics/BillBoard.h"
 #include "scene/SectorVisibility.h"
 #include "scene/PortalContainer.h"
+#include "physics/PhysicsWorld.h"
 
 
 
@@ -66,8 +67,6 @@ namespace hpl {
 		mlSectorVisibilityCount =-1;
 
 		for(int i=0; i<3;++i)mvTempTextures[i]=NULL;
-
-		mOpenILLight = new openil::IL_LightSource;
 	}
 
 	//-----------------------------------------------------------------------
@@ -85,6 +84,19 @@ namespace hpl {
 	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////
 	
+	//-----------------------------------------------------------------------
+
+	void iLight3D::FadeTo(const cColor& aCol, float afRadius, float afTime)
+	{
+		// First, call parent
+		iLight::FadeTo(aCol, afRadius, afTime);
+
+		// Fade to OpenIL color
+		// TODO: Control fade time of OpenIL lights? https://github.com/jorgeas80/PenumbraOverture/issues/8
+		mOpenILLight->setLight(openil::IL_Color(aCol.r, aCol.g, aCol.b, 0));
+		mbOpenILLightNeedsUpdate = true;
+	}
+
 	//-----------------------------------------------------------------------
 
 	void iLight3D::SetVisible(bool abVisible)
@@ -433,6 +445,24 @@ namespace hpl {
 
 	//-----------------------------------------------------------------------
 
+	void iLight3D::SetDiffuseColor(cColor aColor)
+	{
+		// First call parent
+		iLight::SetDiffuseColor(aColor);
+
+		// TODO: Last parameter is color intensity. Should we change it?
+		// TODO: The intensity should be a config parameter
+		openil::IL_Color vOpenILColor;
+		vOpenILColor.setColorf(aColor.r,aColor.g, aColor.b, 0);
+
+		// Set OpenIL color for light source
+		mOpenILLight->setLight(vOpenILColor);
+		mbOpenILLightNeedsUpdate = true;
+	}
+
+	//-----------------------------------------------------------------------
+
+	// This method will be called for point lights. Spot lights have their own implementation
 	void iLight3D::SetFarAttenuation(float afX)
 	{ 
 		mfFarAttenuation = afX;
@@ -441,6 +471,12 @@ namespace hpl {
 		
 		//This is so that the render container is updated.
 		SetTransformUpdated();
+
+		// We update the OpenIL radius (the equivalent to far attenuation) but scaled by 1000
+		float radius = (GetFarAttenuation() * 1000) / GetFarAttenuation();
+		mOpenILLight->setRadius(radius);
+		mbOpenILLightNeedsUpdate = true;
+
 	}
 	//-----------------------------------------------------------------------
 
@@ -473,21 +509,15 @@ namespace hpl {
 			SetTransformUpdated();
 		}
 
-		cColor lightColor = GetDiffuseColor();
-		openil::IL_Color openILLightColor;
-		openILLightColor.setColorf(lightColor.r,lightColor.g, lightColor.b, 0);
+		// TODO: Update OpenIL lights
+		if (mbOpenILLightNeedsUpdate) {
+			Log("+++++++ OpenIL light updated\n");
+			mOpenILLight->play();
+			mbOpenILLightNeedsUpdate = false;
+		}
 
-		// Set this color to openil light
-		mOpenILLight->setLight(openILLightColor);
-
-		// TODO: Translate world position to openil position!!
-		mOpenILLight->setPointLight(openil::IL_Vector3D(0, 0, 0), GetFarAttenuation());
-
-		Log("TODO: Get current position, radius = %f\n", GetFarAttenuation());	
-
-		mOpenILLight->play();
-
-		Log("++++++++++++++++++++++++++++++++++++++\n");
+		else
+			Log("+++++++ OpenIL light does not need to be updated\n");
 	}
 
 	//-----------------------------------------------------------------------
@@ -1152,4 +1182,34 @@ namespace hpl {
 
 	//-----------------------------------------------------------------------
 
+	// Get OpenIL coords ([0 - 100]) from world coords
+	cVector3f iLight3D::GetOpenILCoords(cVector3f hpl1EngineCoords)
+	{
+		cVector3f vMinWorld = mpWorld3D->GetPhysicsWorld()->GetWorldSizeMin();
+		cVector3f vMaxWorld = mpWorld3D->GetPhysicsWorld()->GetWorldSizeMax();
+
+		cVector3f vOpenILCoords;
+
+
+		// TODO: This should be a config value
+		float fOpenILMin = 0.0f; // It's really (0, 0, 0)
+		float fOpenILMax = 100.0f; // It's really (100, 100, 100)
+
+		vOpenILCoords.x = 
+			(((hpl1EngineCoords.x - vMinWorld.x) * (fOpenILMax - fOpenILMin)) / (vMaxWorld.x - vMinWorld.x)) + fOpenILMin;
+
+		vOpenILCoords.y = 
+			(((hpl1EngineCoords.y - vMinWorld.y) * (fOpenILMax - fOpenILMin)) / (vMaxWorld.y - vMinWorld.y)) + fOpenILMin;
+
+		vOpenILCoords.z = 
+			(((hpl1EngineCoords.z - vMinWorld.z) * (fOpenILMax - fOpenILMin)) / (vMaxWorld.z - vMinWorld.z)) + fOpenILMin;
+
+		// HACK
+		vOpenILCoords.x = vOpenILCoords.y = vOpenILCoords.z = 0;
+		return vOpenILCoords;
+
+
+	}
+
+	//-----------------------------------------------------------------------
 }

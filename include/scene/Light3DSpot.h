@@ -83,6 +83,9 @@ namespace hpl {
 		virtual void LoadFromSaveData(iSaveData *apSaveData);
 		virtual void SaveDataSetup(cSaveObjectHandler *apSaveObjectHandler, cGame *apGame);
 
+		// For openil
+		void SetMatrix(const cMatrixf& a_mtxTransform);
+
 	private:
 		cSectorVisibilityContainer* CreateSectorVisibility();
 		void ExtraXMLProperties(TiXmlElement *apMainElem);
