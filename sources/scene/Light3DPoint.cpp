@@ -45,38 +45,6 @@ namespace hpl {
 		mLightType = eLight3DType_Point;
 
 		UpdateBoundingVolume();
-
-		mOpenILLight = new openil::IL_LightSource;
-		mOpenILLight->setAttenuationType(openil::LINEAL);
-		mOpenILLight->setLight(openil::IL_Color(mDiffuseColor.r, mDiffuseColor.g, mDiffuseColor.b, 0));
-		mbOpenILLightNeedsUpdate = true;
-
-		Log("Point light %s created\n", asName.c_str());
-	}
-
-	//-----------------------------------------------------------------------
-
-	//////////////////////////////////////////////////////////////////////////
-	// PUBLIC METHODS
-	//////////////////////////////////////////////////////////////////////////
-		
-	void cLight3DPoint::SetMatrix(const cMatrixf& a_mtxTransform)
-	{
-		// Do your stuff, calling parent...
-		iEntity3D::SetMatrix(a_mtxTransform);
-
-		// Now, let's update the OpenIL position
-		cVector3f vOpenILPosition = GetOpenILCoords(GetLightPosition());
-
-		// Radius must be between 0 and 1000
-		float radius = (GetFarAttenuation() * 1000) / GetFarAttenuation();
-
-		// TODO: OpenIL considers "attenuation" and "radius" differently!
-		mOpenILLight->setPointLight(openil::IL_Vector3D(vOpenILPosition.x, vOpenILPosition.y, vOpenILPosition.z),
-			radius);
-		mbOpenILLightNeedsUpdate = true;
-
-		Log("Point light set at %s\n", GetLightPosition().ToString());
 	}
 
 	//-----------------------------------------------------------------------
@@ -86,6 +54,21 @@ namespace hpl {
 	//////////////////////////////////////////////////////////////////////////
 	
 	//-----------------------------------------------------------------------
+
+	void cLight3DPoint::OnSetPosition()
+	{
+		// Now, let's update the OpenIL position. We need to know the vector from player to light
+		cVector3f vOpenILPosition = GetOpenILCoords(GetLightPosition());
+
+		mOpenILLight->setPointLight(openil::IL_Vector3D(vOpenILPosition.x, vOpenILPosition.y, vOpenILPosition.z),
+			mOpenILLight->getRadius());
+		mbOpenILLightNeedsUpdate = true;
+
+		Log("Point light set at %s\n", GetLightPosition().ToString());
+	}
+
+	//-----------------------------------------------------------------------
+
 
 	cSectorVisibilityContainer* cLight3DPoint::CreateSectorVisibility()
 	{

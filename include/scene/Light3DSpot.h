@@ -61,7 +61,7 @@ namespace hpl {
 		void SetTexture(iTexture *apTexture);
 		iTexture* GetTexture();
 
-		void SetFOV(float afAngle) { mfFOV = afAngle; mbProjectionUpdated = true;}
+		void SetFOV(float afAngle) { mfFOV = afAngle; mbProjectionUpdated = true; OnSetPosition();}
 		float GetFOV() { return mfFOV;}
 
 		void SetAspect(float afAngle) { mfAspect = afAngle; mbProjectionUpdated = true;}
@@ -83,10 +83,10 @@ namespace hpl {
 		virtual void LoadFromSaveData(iSaveData *apSaveData);
 		virtual void SaveDataSetup(cSaveObjectHandler *apSaveObjectHandler, cGame *apGame);
 
-		// For openil
-		void SetMatrix(const cMatrixf& a_mtxTransform);
-
 	private:
+		// Needed for OpenIL
+		void OnSetPosition();
+
 		cSectorVisibilityContainer* CreateSectorVisibility();
 		void ExtraXMLProperties(TiXmlElement *apMainElem);
 		void UpdateBoundingVolume();

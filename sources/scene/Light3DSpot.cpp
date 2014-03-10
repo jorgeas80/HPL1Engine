@@ -79,13 +79,6 @@ namespace hpl {
 		m_mtxProjection = cMatrixf::Identity;
 
 		UpdateBoundingVolume();
-
-		mOpenILLight = new openil::IL_LightSource;
-		mOpenILLight->setAttenuationType(openil::LINEAL);
-		mOpenILLight->setLight(openil::IL_Color(mDiffuseColor.r, mDiffuseColor.g, mDiffuseColor.b, 0));
-		mbOpenILLightNeedsUpdate = true;
-
-		Log("Point light %s created\n", asName.c_str());
 	}
 	
 	cLight3DSpot::~cLight3DSpot()
@@ -232,36 +225,31 @@ namespace hpl {
 		return GetFrustum()->CollideBoundingVolume(apBV)!= eFrustumCollision_Outside;
 	}
 
+	
 	//-----------------------------------------------------------------------
 
-	void cLight3DSpot::SetMatrix(const cMatrixf& a_mtxTransform)
-	{
-		// Do your stuff, calling parent...
-		iEntity3D::SetMatrix(a_mtxTransform);
+	//////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////
 
+	//-----------------------------------------------------------------------
+
+	void cLight3DSpot::OnSetPosition()
+	{
 		// Now, let's update the OpenIL position
 		cVector3f vOpenILPosition = GetOpenILCoords(GetLightPosition());
 
 		// TODO: Calculate spot direction
 		openil::IL_Vector3D vOpenILDirection(0, 0, 0);
 
-		// Radius must be between 0 and 1000
-		float radius = (GetFarAttenuation() * 1000) / GetFarAttenuation();
-
-		// TODO: OpenIL considers "attenuation" and "radius" differently!
 		mOpenILLight->setSpotLight(openil::IL_Vector3D(vOpenILPosition.x, vOpenILPosition.y, vOpenILPosition.z),
-			radius, vOpenILDirection, mfFOV);
+			mOpenILLight->getRadius(), vOpenILDirection, mfFOV);
 
 		Log("Spot light set at %s\n", GetLightPosition().ToString());
 
 		mbOpenILLightNeedsUpdate = true;
 	}
 
-	//-----------------------------------------------------------------------
-
-	//////////////////////////////////////////////////////////////////////////
-	// PRIVATE METHODS
-	//////////////////////////////////////////////////////////////////////////
 	
 	//-----------------------------------------------------------------------
 

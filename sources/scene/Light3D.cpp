@@ -67,6 +67,23 @@ namespace hpl {
 		mlSectorVisibilityCount =-1;
 
 		for(int i=0; i<3;++i)mvTempTextures[i]=NULL;
+
+		// Creation of OpenIL light source
+		mOpenILLight = new openil::IL_LightSource;
+		
+		// TODO: Work on attenuation model
+		mOpenILLight->setAttenuationType(openil::LINEAL);
+
+		// TODO: This means "always send json message". Investigate if it's a good approach
+		mOpenILLight->setPriorityLevel(1);
+
+		// TODO: Set intensity to a meaningful value
+		openil::IL_Color color;
+		color.setColorf(mDiffuseColor.r, mDiffuseColor.g, mDiffuseColor.b, 0);
+		mOpenILLight->setLight(color);
+		
+		// TODO: Review if this variable is really needed
+		mbOpenILLightNeedsUpdate = true;
 	}
 
 	//-----------------------------------------------------------------------
@@ -83,20 +100,18 @@ namespace hpl {
 	//////////////////////////////////////////////////////////////////////////
 	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////
-	
+
 	//-----------------------------------------------------------------------
 
-	void iLight3D::FadeTo(const cColor& aCol, float afRadius, float afTime)
+	void iLight3D::SetMatrix(const cMatrixf& a_mtxTransform)
 	{
-		// First, call parent
-		iLight::FadeTo(aCol, afRadius, afTime);
+		// Do your stuff, calling parent...
+		iEntity3D::SetMatrix(a_mtxTransform);
 
-		// Fade to OpenIL color
-		// TODO: Control fade time of OpenIL lights? https://github.com/jorgeas80/PenumbraOverture/issues/8
-		mOpenILLight->setLight(openil::IL_Color(aCol.r, aCol.g, aCol.b, 0));
-		mbOpenILLightNeedsUpdate = true;
+		OnSetPosition();
 	}
 
+	
 	//-----------------------------------------------------------------------
 
 	void iLight3D::SetVisible(bool abVisible)
@@ -445,24 +460,6 @@ namespace hpl {
 
 	//-----------------------------------------------------------------------
 
-	void iLight3D::SetDiffuseColor(cColor aColor)
-	{
-		// First call parent
-		iLight::SetDiffuseColor(aColor);
-
-		// TODO: Last parameter is color intensity. Should we change it?
-		// TODO: The intensity should be a config parameter
-		openil::IL_Color vOpenILColor;
-		vOpenILColor.setColorf(aColor.r,aColor.g, aColor.b, 0);
-
-		// Set OpenIL color for light source
-		mOpenILLight->setLight(vOpenILColor);
-		mbOpenILLightNeedsUpdate = true;
-	}
-
-	//-----------------------------------------------------------------------
-
-	// This method will be called for point lights. Spot lights have their own implementation
 	void iLight3D::SetFarAttenuation(float afX)
 	{ 
 		mfFarAttenuation = afX;
@@ -472,11 +469,7 @@ namespace hpl {
 		//This is so that the render container is updated.
 		SetTransformUpdated();
 
-		// We update the OpenIL radius (the equivalent to far attenuation) but scaled by 1000
-		float radius = (GetFarAttenuation() * 1000) / GetFarAttenuation();
-		mOpenILLight->setRadius(radius);
-		mbOpenILLightNeedsUpdate = true;
-
+		OnSetFarAttenuation();
 	}
 	//-----------------------------------------------------------------------
 
@@ -509,10 +502,12 @@ namespace hpl {
 			SetTransformUpdated();
 		}
 
+		// Calculate camera position
+
 		// TODO: Update OpenIL lights
 		if (mbOpenILLightNeedsUpdate) {
 			Log("+++++++ OpenIL light updated\n");
-			mOpenILLight->play();
+			//mOpenILLight->play();
 			mbOpenILLightNeedsUpdate = false;
 		}
 
@@ -955,7 +950,6 @@ namespace hpl {
 		}
 	}
 
-
 	//-----------------------------------------------------------------------
 	
 	void iLight3D::OnFlickerOff()
@@ -988,7 +982,25 @@ namespace hpl {
 			cBillboard *pBill = mvBillboards[i];
 			pBill->SetColor(cColor(mDiffuseColor.r,mDiffuseColor.g,mDiffuseColor.b,1));
 		}
+
+		// TODO: Set intensity to a meaningful value
+		openil::IL_Color color;
+		color.setColorf(mDiffuseColor.r, mDiffuseColor.g, mDiffuseColor.b, 0);
+		mOpenILLight->setLight(color);
+
+		mbOpenILLightNeedsUpdate = true;
 	}
+
+
+	//-----------------------------------------------------------------------
+	void iLight3D::OnSetFarAttenuation()
+	{
+		// We update the OpenIL radius (the equivalent to far attenuation) but scaled by 1000
+		float radius = (GetFarAttenuation() * 1000) / GetFarAttenuation();
+		mOpenILLight->setRadius(radius);
+		mbOpenILLightNeedsUpdate = true;
+	}
+
 
 	//////////////////////////////////////////////////////////////////////////
 	// SAVE OBJECT STUFF

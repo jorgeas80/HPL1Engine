@@ -127,8 +127,6 @@ namespace hpl {
 		virtual void SetFarAttenuation(float afX);
 		virtual void SetNearAttenuation(float afX);
 
-		void SetDiffuseColor(cColor aColor);
-
 		cVector3f GetLightPosition();
 
 		virtual bool BeginDraw(cRenderSettings *apRenderSettings,iLowLevelGraphics *apLowLevelGraphics);
@@ -189,12 +187,16 @@ namespace hpl {
 
 		// Things OpenIL needs
 		cVector3f GetOpenILCoords(cVector3f hpl1EngineCoords);
-		void FadeTo(const cColor& aCol, float afRadius, float afTime);
+		void SetMatrix(const cMatrixf& a_mtxTransform); 
 
 	protected:
 		void OnFlickerOff();
 		void OnFlickerOn();
 		void OnSetDiffuse();
+		void OnSetFarAttenuation();
+
+		// Needed for OpenIL (pure virtual, it will be implemented by point/spot children)
+		virtual void OnSetPosition()=0;
 
         virtual cSectorVisibilityContainer* CreateSectorVisibility()=0;
 		virtual void ExtraXMLProperties(TiXmlElement *apMainElem){}
