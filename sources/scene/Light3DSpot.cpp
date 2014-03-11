@@ -34,8 +34,6 @@
 #include "scene/SectorVisibility.h"
 #include "scene/PortalContainer.h"
 
-#include "IL_Utils.h"
-
 namespace hpl {
 	
 	static const cMatrixf g_mtxTextureUnitFix(	0.5f,0,   0,   0.5f,
@@ -225,31 +223,12 @@ namespace hpl {
 		return GetFrustum()->CollideBoundingVolume(apBV)!= eFrustumCollision_Outside;
 	}
 
-	
+
 	//-----------------------------------------------------------------------
 
 	//////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////
-
-	//-----------------------------------------------------------------------
-
-	void cLight3DSpot::OnSetPosition()
-	{
-		// Now, let's update the OpenIL position
-		cVector3f vOpenILPosition = GetOpenILCoords(GetLightPosition());
-
-		// TODO: Calculate spot direction
-		openil::IL_Vector3D vOpenILDirection(0, 0, 0);
-
-		mOpenILLight->setSpotLight(openil::IL_Vector3D(vOpenILPosition.x, vOpenILPosition.y, vOpenILPosition.z),
-			mOpenILLight->getRadius(), vOpenILDirection, mfFOV);
-
-		Log("Spot light set at %s\n", GetLightPosition().ToString());
-
-		mbOpenILLightNeedsUpdate = true;
-	}
-
 	
 	//-----------------------------------------------------------------------
 

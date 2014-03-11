@@ -30,8 +30,6 @@
 #include "scene/SectorVisibility.h"
 #include "scene/PortalContainer.h"
 
-#include "IL_Utils.h"
-
 namespace hpl {
 
 	//////////////////////////////////////////////////////////////////////////
@@ -53,20 +51,6 @@ namespace hpl {
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////
 	
-	//-----------------------------------------------------------------------
-
-	void cLight3DPoint::OnSetPosition()
-	{
-		// Now, let's update the OpenIL position. We need to know the vector from player to light
-		cVector3f vOpenILPosition = GetOpenILCoords(GetLightPosition());
-
-		mOpenILLight->setPointLight(openil::IL_Vector3D(vOpenILPosition.x, vOpenILPosition.y, vOpenILPosition.z),
-			mOpenILLight->getRadius());
-		mbOpenILLightNeedsUpdate = true;
-
-		Log("Point light set at %s\n", GetLightPosition().ToString());
-	}
-
 	//-----------------------------------------------------------------------
 
 

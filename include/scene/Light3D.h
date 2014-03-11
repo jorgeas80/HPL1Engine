@@ -186,17 +186,15 @@ namespace hpl {
 		virtual void SaveDataSetup(cSaveObjectHandler *apSaveObjectHandler, cGame *apGame);
 
 		// Things OpenIL needs
-		cVector3f GetOpenILCoords(cVector3f hpl1EngineCoords);
-		void SetMatrix(const cMatrixf& a_mtxTransform); 
+		bool OpenILLightNeedsUpdate() { return mbOpenILLightNeedsUpdate; }
+		openil::IL_ref_ptr<openil::IL_LightSource> GetOpenILLightSource() {return mOpenILLight;}
 
 	protected:
 		void OnFlickerOff();
 		void OnFlickerOn();
 		void OnSetDiffuse();
 		void OnSetFarAttenuation();
-
-		// Needed for OpenIL (pure virtual, it will be implemented by point/spot children)
-		virtual void OnSetPosition()=0;
+		void OnFade();
 
         virtual cSectorVisibilityContainer* CreateSectorVisibility()=0;
 		virtual void ExtraXMLProperties(TiXmlElement *apMainElem){}

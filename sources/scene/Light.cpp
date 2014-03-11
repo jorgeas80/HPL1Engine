@@ -180,6 +180,8 @@ namespace hpl {
 
 		mfDestRadius = afRadius;
 		mDestCol = aCol;
+
+		OnFade();
 	}
 
 	bool iLight::IsFading()

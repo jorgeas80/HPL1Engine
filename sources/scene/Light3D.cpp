@@ -38,6 +38,8 @@
 #include "scene/PortalContainer.h"
 #include "physics/PhysicsWorld.h"
 
+#include "IL_Utils.h"
+
 
 
 namespace hpl {
@@ -100,17 +102,6 @@ namespace hpl {
 	//////////////////////////////////////////////////////////////////////////
 	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////
-
-	//-----------------------------------------------------------------------
-
-	void iLight3D::SetMatrix(const cMatrixf& a_mtxTransform)
-	{
-		// Do your stuff, calling parent...
-		iEntity3D::SetMatrix(a_mtxTransform);
-
-		OnSetPosition();
-	}
-
 	
 	//-----------------------------------------------------------------------
 
@@ -491,7 +482,6 @@ namespace hpl {
 
 	void iLight3D::UpdateLogic(float afTimeStep)
 	{
-		Log("++++++++++++++++++++++++++++++++++++++ Update light 3D: %s\n", GetName().c_str());
 		UpdateLight(afTimeStep);
 
 		if(mfFadeTime>0 || mbFlickering)
@@ -501,18 +491,6 @@ namespace hpl {
 			//This is so that the render container is updated.
 			SetTransformUpdated();
 		}
-
-		// Calculate camera position
-
-		// TODO: Update OpenIL lights
-		if (mbOpenILLightNeedsUpdate) {
-			Log("+++++++ OpenIL light updated\n");
-			//mOpenILLight->play();
-			mbOpenILLightNeedsUpdate = false;
-		}
-
-		else
-			Log("+++++++ OpenIL light does not need to be updated\n");
 	}
 
 	//-----------------------------------------------------------------------
@@ -995,9 +973,30 @@ namespace hpl {
 	//-----------------------------------------------------------------------
 	void iLight3D::OnSetFarAttenuation()
 	{
-		// We update the OpenIL radius (the equivalent to far attenuation) but scaled by 1000
-		float radius = (GetFarAttenuation() * 1000) / GetFarAttenuation();
+		// This maximum is used in cPlayerFlashLight::Update
+		float fMaxAttValue = 100.0f;
+
+		float fOpenILRadius = openil::GetOpenILRadius(GetFarAttenuation(), 0.0f, fMaxAttValue);
+
+		mOpenILLight->setRadius(fOpenILRadius);
+	}
+
+	//-----------------------------------------------------------------------
+	void iLight3D::OnFade()
+	{
+		// This maximum is used in cPlayerFlashLight::Update
+		float fMaxAttValue = 100.0f;
+
+		// TODO: mfDestRadius or GetFarAttenuation?
+		float radius = openil::GetOpenILRadius(mfDestRadius, 0.0f, fMaxAttValue);
+
 		mOpenILLight->setRadius(radius);
+
+		// TODO: mDestColor or GetDiffuseColor?
+		openil::IL_Color color;
+		color.setColorf(mDestCol.r, mDestCol.g, mDestCol.b, 0);
+		mOpenILLight->setLight(color);
+
 		mbOpenILLightNeedsUpdate = true;
 	}
 
@@ -1190,37 +1189,6 @@ namespace hpl {
 
 			AttachBillboard(pBill);
 		}
-	}
-
-	//-----------------------------------------------------------------------
-
-	// Get OpenIL coords ([0 - 100]) from world coords
-	cVector3f iLight3D::GetOpenILCoords(cVector3f hpl1EngineCoords)
-	{
-		cVector3f vMinWorld = mpWorld3D->GetPhysicsWorld()->GetWorldSizeMin();
-		cVector3f vMaxWorld = mpWorld3D->GetPhysicsWorld()->GetWorldSizeMax();
-
-		cVector3f vOpenILCoords;
-
-
-		// TODO: This should be a config value
-		float fOpenILMin = 0.0f; // It's really (0, 0, 0)
-		float fOpenILMax = 100.0f; // It's really (100, 100, 100)
-
-		vOpenILCoords.x = 
-			(((hpl1EngineCoords.x - vMinWorld.x) * (fOpenILMax - fOpenILMin)) / (vMaxWorld.x - vMinWorld.x)) + fOpenILMin;
-
-		vOpenILCoords.y = 
-			(((hpl1EngineCoords.y - vMinWorld.y) * (fOpenILMax - fOpenILMin)) / (vMaxWorld.y - vMinWorld.y)) + fOpenILMin;
-
-		vOpenILCoords.z = 
-			(((hpl1EngineCoords.z - vMinWorld.z) * (fOpenILMax - fOpenILMin)) / (vMaxWorld.z - vMinWorld.z)) + fOpenILMin;
-
-		// HACK
-		vOpenILCoords.x = vOpenILCoords.y = vOpenILCoords.z = 0;
-		return vOpenILCoords;
-
-
 	}
 
 	//-----------------------------------------------------------------------

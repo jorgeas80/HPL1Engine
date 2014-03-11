@@ -55,9 +55,6 @@ namespace hpl {
 		void UpdateBoundingVolume();
 		bool CreateClipRect(cRect2l &aCliprect,cRenderSettings *apRenderSettings,iLowLevelGraphics *apLowLevelGraphics);
 
-		// Needed for OpenIL
-		void OnSetPosition();
-
 	};
 
 };
