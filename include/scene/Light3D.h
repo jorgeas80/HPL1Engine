@@ -26,6 +26,8 @@
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Renderable.h"
 
+#include "IL_LightSource.h"
+
 class TiXmlElement;
 
 namespace hpl {
@@ -183,10 +185,16 @@ namespace hpl {
 		virtual void LoadFromSaveData(iSaveData *apSaveData);
 		virtual void SaveDataSetup(cSaveObjectHandler *apSaveObjectHandler, cGame *apGame);
 
+		// Things OpenIL needs
+		bool OpenILLightNeedsUpdate() { return mbOpenILLightNeedsUpdate; }
+		openil::IL_ref_ptr<openil::IL_LightSource> GetOpenILLightSource() {return mOpenILLight;}
+
 	protected:
 		void OnFlickerOff();
 		void OnFlickerOn();
 		void OnSetDiffuse();
+		void OnSetFarAttenuation();
+		void OnFade();
 
         virtual cSectorVisibilityContainer* CreateSectorVisibility()=0;
 		virtual void ExtraXMLProperties(TiXmlElement *apMainElem){}
@@ -217,6 +225,9 @@ namespace hpl {
 		cSectorVisibilityContainer *mpVisSectorCont;
 
 		unsigned int *mpIndexArray;
+
+		openil::IL_ref_ptr<openil::IL_LightSource> mOpenILLight;
+		bool mbOpenILLightNeedsUpdate;
 	};
 
 	typedef std::list<iLight3D*> tLight3DList;

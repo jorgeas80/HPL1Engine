@@ -271,13 +271,13 @@ namespace hpl {
 				CheckMinMaxUpdate(vMin,vMax,vLocalMin,vLocalMax);
 			}
 
-			//Log("World Min: (%s) Max: (%s)\n",vMin.ToString().c_str(), vMax.ToString().c_str());
-
 			//Create a 10 m border around the world aswell:
 			vMin = vMin - cVector3f(10,10,10);
 			vMax = vMax + cVector3f(10,10,10);
 
 			if(mpPhysicsWorld) mpPhysicsWorld->SetWorldSize(vMin, vMax);
+
+			Log("World Min: (%s) Max: (%s)\n",vMin.ToString().c_str(), vMax.ToString().c_str());
 		}
 		//////////////////////////////////////////////
 		// Get world size by getting global objects BV
@@ -310,11 +310,11 @@ namespace hpl {
 				CheckMinMaxUpdate(vMin,vMax,vLocalMin,vLocalMax);
 			}
 
-
-
 			vMin = vMin - cVector3f(10,10,10);
 			vMax = vMax + cVector3f(10,10,10);
 			if(mpPhysicsWorld) mpPhysicsWorld->SetWorldSize(vMin, vMax);
+
+			Log("World Min: (%s) Max: (%s)\n",vMin.ToString().c_str(), vMax.ToString().c_str());
 		}
 	}
 
@@ -551,6 +551,8 @@ namespace hpl {
 
 		pLight->SetWorld3D(this);
 
+		Log("cWorld3D::CreateLightPoint --> Create light point: %s at %s\n", asName.c_str(), pLight->GetWorldPosition().ToString());
+
 		return pLight;
 	}
 
@@ -575,7 +577,9 @@ namespace hpl {
 			mpPortalContainer->Add(pLight, false);
 
 		pLight->SetWorld3D(this);
-		
+
+		Log("cWorld3D::CreateLightSpot --> Create light spot: %s at %s\n", asName.c_str(), pLight->GetWorldPosition().ToString());
+
 		return pLight;
 	}
 

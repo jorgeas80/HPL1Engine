@@ -36,6 +36,9 @@
 #include "graphics/BillBoard.h"
 #include "scene/SectorVisibility.h"
 #include "scene/PortalContainer.h"
+#include "physics/PhysicsWorld.h"
+
+#include "IL_Utils.h"
 
 
 
@@ -66,6 +69,23 @@ namespace hpl {
 		mlSectorVisibilityCount =-1;
 
 		for(int i=0; i<3;++i)mvTempTextures[i]=NULL;
+
+		// Creation of OpenIL light source
+		mOpenILLight = new openil::IL_LightSource;
+		
+		// TODO: Work on attenuation model
+		mOpenILLight->setAttenuationType(openil::LINEAL);
+
+		// TODO: This means "always send json message". Investigate if it's a good approach
+		mOpenILLight->setPriorityLevel(1);
+
+		// TODO: Set intensity to a meaningful value
+		openil::IL_Color color;
+		color.setColorf(mDiffuseColor.r, mDiffuseColor.g, mDiffuseColor.b, 0);
+		mOpenILLight->setLight(color);
+		
+		// TODO: Review if this variable is really needed
+		mbOpenILLightNeedsUpdate = true;
 	}
 
 	//-----------------------------------------------------------------------
@@ -439,6 +459,8 @@ namespace hpl {
 		
 		//This is so that the render container is updated.
 		SetTransformUpdated();
+
+		OnSetFarAttenuation();
 	}
 	//-----------------------------------------------------------------------
 
@@ -457,9 +479,11 @@ namespace hpl {
 
 	//-----------------------------------------------------------------------
 
+
 	void iLight3D::UpdateLogic(float afTimeStep)
 	{
 		UpdateLight(afTimeStep);
+
 		if(mfFadeTime>0 || mbFlickering)
 		{
 			mbUpdateBoundingVolume = true;
@@ -904,7 +928,6 @@ namespace hpl {
 		}
 	}
 
-
 	//-----------------------------------------------------------------------
 	
 	void iLight3D::OnFlickerOff()
@@ -937,7 +960,46 @@ namespace hpl {
 			cBillboard *pBill = mvBillboards[i];
 			pBill->SetColor(cColor(mDiffuseColor.r,mDiffuseColor.g,mDiffuseColor.b,1));
 		}
+
+		// TODO: Set intensity to a meaningful value
+		openil::IL_Color color;
+		color.setColorf(mDiffuseColor.r, mDiffuseColor.g, mDiffuseColor.b, 0);
+		mOpenILLight->setLight(color);
+
+		mbOpenILLightNeedsUpdate = true;
 	}
+
+
+	//-----------------------------------------------------------------------
+	void iLight3D::OnSetFarAttenuation()
+	{
+		// This maximum is used in cPlayerFlashLight::Update
+		float fMaxAttValue = 100.0f;
+
+		float fOpenILRadius = openil::GetOpenILRadius(GetFarAttenuation(), 0.0f, fMaxAttValue);
+
+		mOpenILLight->setRadius(fOpenILRadius);
+	}
+
+	//-----------------------------------------------------------------------
+	void iLight3D::OnFade()
+	{
+		// This maximum is used in cPlayerFlashLight::Update
+		float fMaxAttValue = 100.0f;
+
+		// TODO: mfDestRadius or GetFarAttenuation?
+		float radius = openil::GetOpenILRadius(mfDestRadius, 0.0f, fMaxAttValue);
+
+		mOpenILLight->setRadius(radius);
+
+		// TODO: mDestColor or GetDiffuseColor?
+		openil::IL_Color color;
+		color.setColorf(mDestCol.r, mDestCol.g, mDestCol.b, 0);
+		mOpenILLight->setLight(color);
+
+		mbOpenILLightNeedsUpdate = true;
+	}
+
 
 	//////////////////////////////////////////////////////////////////////////
 	// SAVE OBJECT STUFF
@@ -1130,5 +1192,4 @@ namespace hpl {
 	}
 
 	//-----------------------------------------------------------------------
-
 }

@@ -116,7 +116,7 @@ namespace hpl {
 	}
 	
 	//-----------------------------------------------------------------------
-
+	// HERE, YOU KNOW THE ENTITY POSITION IN THE WORLD!!
 	void iEntity3D::SetMatrix(const cMatrixf& a_mtxTransform)
 	{
 		m_mtxLocalTransform = a_mtxTransform;
@@ -130,12 +130,15 @@ namespace hpl {
 	{
 		if(mpParent)
 		{
+			// In this case, avWorldPos is the position relative to parent
 			SetPosition(avWorldPos - mpParent->GetWorldPosition());
 		}
 		else
 		{
 			SetPosition(avWorldPos);
 		}
+
+		Log("iEntity3D::SetWorldPosition --> %s\n", GetWorldPosition().ToString());
 	}
 
 	//-----------------------------------------------------------------------

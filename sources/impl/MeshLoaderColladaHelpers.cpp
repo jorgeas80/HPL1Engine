@@ -554,7 +554,7 @@ namespace hpl {
 
 	
 	//-----------------------------------------------------------------------
-
+	// Check lighting elements at http://www.khronos.org/files/collada_reference_card_1_4.pdf
 	void cMeshLoaderCollada::LoadLights(TiXmlElement* apRootElem, tColladaLightVec &avColladaLightVec)
 	{
 		TiXmlElement* pLightElem = apRootElem->FirstChildElement("light");
@@ -635,9 +635,9 @@ namespace hpl {
 				}
 			}
 
-			//Log("Loaded light '%s', type '%s', color: %f %f %f\n", Light.msId.c_str(), 
-			//				Light.msType.c_str(),
-			//				Light.mDiffuseColor.r,Light.mDiffuseColor.g,Light.mDiffuseColor.b);
+			Log("Loaded light '%s', type '%s', color: %f %f %f\n", Light.msId.c_str(), 
+							Light.msType.c_str(),
+							Light.mDiffuseColor.r,Light.mDiffuseColor.g,Light.mDiffuseColor.b);
 
 			avColladaLightVec.push_back(Light);
 		}

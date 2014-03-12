@@ -61,7 +61,7 @@ namespace hpl {
 		void SetTexture(iTexture *apTexture);
 		iTexture* GetTexture();
 
-		void SetFOV(float afAngle) { mfFOV = afAngle; mbProjectionUpdated = true;}
+		void SetFOV(float afAngle) { mfFOV = afAngle; mbProjectionUpdated = true; }
 		float GetFOV() { return mfFOV;}
 
 		void SetAspect(float afAngle) { mfAspect = afAngle; mbProjectionUpdated = true;}

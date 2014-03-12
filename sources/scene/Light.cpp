@@ -24,7 +24,6 @@
 #include "scene/World3D.h"
 #include "scene/SoundEntity.h"
 
-
 namespace hpl {
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -65,13 +64,14 @@ namespace hpl {
 
 	//-----------------------------------------------------------------------
 
+	// afTimeStep is the amount of seconds the new status should last
 	void iLight::UpdateLight(float afTimeStep)
 	{	
 		/////////////////////////////////////////////
 		// Fade
 		if(mfFadeTime>0)
 		{
-			//Log("Fading: %f / %f\n",afTimeStep,mfFadeTime);
+			Log("Fading: %f / %f\n",afTimeStep,mfFadeTime);
 			
 			mfFarAttenuation += mfRadiusAdd*afTimeStep;
 			mDiffuseColor.r += mColAdd.r*afTimeStep;
@@ -156,10 +156,11 @@ namespace hpl {
 			mfFlickerTime += afTimeStep;
 		}
 
-		/*Log("Time: %f Length: %f FadeTime: %f Color: (%f %f %f %f)\n",mfFlickerTime, mfFlickerStateLength,
+		Log("Time: %f Length: %f FadeTime: %f Color: (%f %f %f %f) Position: %s\n",mfFlickerTime, mfFlickerStateLength,
 											mfFadeTime,
 											mDiffuseColor.r,mDiffuseColor.g,
-											mDiffuseColor.b,mDiffuseColor.a);*/
+											mDiffuseColor.b,mDiffuseColor.a,
+											GetLightPosition().ToString());
 	}
 
 	//-----------------------------------------------------------------------
@@ -179,6 +180,8 @@ namespace hpl {
 
 		mfDestRadius = afRadius;
 		mDestCol = aCol;
+
+		OnFade();
 	}
 
 	bool iLight::IsFading()

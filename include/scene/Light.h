@@ -99,6 +99,7 @@ namespace hpl {
 		virtual void OnFlickerOff(){}
 		virtual void OnFlickerOn(){}
 		virtual void OnSetDiffuse(){}
+		virtual void OnFade(){}
 
 		cColor mDiffuseColor;
 		cColor mSpecularColor;

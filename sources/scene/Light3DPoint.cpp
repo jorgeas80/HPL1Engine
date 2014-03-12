@@ -37,7 +37,7 @@ namespace hpl {
 	//////////////////////////////////////////////////////////////////////////
 
 	//-----------------------------------------------------------------------
-
+	// HERE, YOU DON'T KNOW THE LIGHT POSITION YET!
 	cLight3DPoint::cLight3DPoint(tString asName, cResources *apResources) : iLight3D(asName,apResources)
 	{
 		mLightType = eLight3DType_Point;
@@ -52,6 +52,7 @@ namespace hpl {
 	//////////////////////////////////////////////////////////////////////////
 	
 	//-----------------------------------------------------------------------
+
 
 	cSectorVisibilityContainer* cLight3DPoint::CreateSectorVisibility()
 	{

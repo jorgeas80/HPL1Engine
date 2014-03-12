@@ -35,6 +35,8 @@
 #include "system/LowLevelSystem.h"
 #include "game/LowLevelGameSetup.h"
 
+#include "IL_Utils.h"
+
 namespace hpl {
 
 	//////////////////////////////////////////////////////////////////////////
@@ -255,6 +257,19 @@ namespace hpl {
 		//Init haptic
 		if(mpHaptic) mpHaptic->Init(mpResources);
 
+		// Init OpenIL, if needed
+		mbUseOpenIL = aVars.GetBool("UseLightEngine", false);
+		if (mbUseOpenIL) {
+			openil::initLightEngine();
+			Log("Initializing OpenIL Light Engine\n");
+		}
+
+		// Check
+		if (!openil::isEnableLightEngine()) 
+			Log("Something wrong happened. OpenIL not initialized\n");
+
+		Log("--------------------------------------------------------\n\n");
+
 		Log("Initializing Game Module\n");
 		Log("--------------------------------------------------------\n");
 		//Create the updatehandler
@@ -320,6 +335,9 @@ namespace hpl {
 		hplDelete(mpPhysics);
 		hplDelete(mpAI);
 		hplDelete(mpSystem);
+
+		if (mbUseOpenIL)
+			openil::endLightEngine();
 		
 		Log(" Deleting game setup provided by user\n");
 		hplDelete(mpGameSetup);
@@ -340,7 +358,6 @@ namespace hpl {
 	{
 		//Log line that ends user init.
 		Log("--------------------------------------------------------\n\n");
-		
 		bool bDone = false;
 		double fNumOfTimes=0;
 		double fMediumTime=0;
@@ -354,8 +371,7 @@ namespace hpl {
 		
 		//reset the mouse, really reset the damn thing :P
 		for(int i=0;i<10;i++) mpInput->GetMouse()->Reset();
-		
-		
+
 		Log("Game Running\n");
 		Log("--------------------------------------------------------\n");
 

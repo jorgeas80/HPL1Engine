@@ -2249,7 +2249,12 @@ namespace hpl {
 							{
 								cLight3DPoint *pLight = apWorld->CreateLightPoint(sLightName, false);
 
+								// HERE, YOU SET THE LIGHT POSITION 
+								Log("cMeshLoaderCollada::AddSceneObjects --> Point Light position before SetMatrix: %s\n",
+									pLight->GetWorldPosition().ToString());
 								pLight->SetMatrix(apNode->m_mtxWorldTransform);
+								Log("cMeshLoaderCollada::AddSceneObjects --> Point Light position after SetMatrix: %s\n",
+									pLight->GetWorldPosition().ToString());
 								pColladaLight->mDiffuseColor.a = apNode->mvScale.y;
 								pLight->SetDiffuseColor(pColladaLight->mDiffuseColor);
 								pLight->SetFarAttenuation(apNode->mvScale.x);
@@ -2266,8 +2271,8 @@ namespace hpl {
 
 								apWorld->GetPortalContainer()->Add(pLight, bStatic);
 
-								//Log("Added light '%s' attenuation:  %f a: %f\n",pLight->GetName().c_str(),
-								//		pLight->GetFarAttenuation(), pLight->GetDiffuseColor().a);
+								Log("Added light '%s' attenuation:  %f a: %f\n",pLight->GetName().c_str(),
+										pLight->GetFarAttenuation(), pLight->GetDiffuseColor().a);
 
 								if(sLightFile != "")
 									pLight->LoadXMLProperties(sLightFile);
@@ -2276,7 +2281,12 @@ namespace hpl {
 							{
 								cLight3DSpot *pLight = apWorld->CreateLightSpot(sLightName,"", false);
 
+								// HERE, YOU SET THE LIGHT POSITION
+								Log("cMeshLoaderCollada::AddSceneObjects --> Spot Light position before SetMatrix: %s\n",
+									pLight->GetWorldPosition().ToString());
 								pLight->SetMatrix(apNode->m_mtxWorldTransform);
+								Log("cMeshLoaderCollada::AddSceneObjects --> Spot Light position after SetMatrix: %s\n",
+									pLight->GetWorldPosition().ToString());
 								pLight->SetDiffuseColor(pColladaLight->mDiffuseColor);
 								pLight->SetFarAttenuation(apNode->mvScale.x);
 								pLight->SetFOV(cMath::ToRad(pColladaLight->mfAngle));

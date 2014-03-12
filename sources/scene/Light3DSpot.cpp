@@ -47,7 +47,7 @@ namespace hpl {
 	//////////////////////////////////////////////////////////////////////////
 
 	//-----------------------------------------------------------------------
-	
+	// HERE, YOU DON'T KNOW THE LIGHT POSITION YET!
 	cLight3DSpot::cLight3DSpot(tString asName, cResources *apResources) : iLight3D(asName,apResources)
 	{
 		mbProjectionUpdated = true;
@@ -66,6 +66,9 @@ namespace hpl {
 
 		mfFOV = cMath::ToRad(60.0f);
 		mfAspect = 1.0f;
+
+		// This tutorial can explain these 2 values (See "The projection matrix section)
+		// http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/#The_Model__View_and_Projection_matrices
 		mfFarAttenuation = 100.0f;
 		mfNearClipPlane = 0.1f;
 		
@@ -219,6 +222,7 @@ namespace hpl {
 
 		return GetFrustum()->CollideBoundingVolume(apBV)!= eFrustumCollision_Outside;
 	}
+
 
 	//-----------------------------------------------------------------------
 
