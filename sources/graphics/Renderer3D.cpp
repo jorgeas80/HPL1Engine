@@ -885,10 +885,15 @@ namespace hpl {
 			if(mpRenderList->GetLightObjects(lLightCount)==0)
 			{
 				lLightCount++;
+
+				Log("The light %s does not affect any object\n", pLight->GetName().c_str());
 				continue;
 			}
 
 			if(mbLog) Log("-----Light %s/%d ------\n",pLight->GetName().c_str(), (size_t)pLight);
+
+			Log("Now we render all the objects affected by light %s. We should check if any of them is in front of the cam\n", 
+				pLight->GetName().c_str());
 
 			cRenderNode* pNode = mpRenderList->GetRootNode(eRenderListDrawType_Normal,
 															eMaterialRenderType_Light, lLightCount);

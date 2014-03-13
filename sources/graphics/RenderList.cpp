@@ -289,7 +289,7 @@ namespace hpl {
 			//Skip meshes...
 			if(pObject->GetRenderType() == eRenderableType_Mesh) continue;
 
-			//If the object is transparent add tot eh trans tree
+			//If the object is transparent add to the trans tree
 			if(pMat->IsTransperant())
 			{
 				//Use the set cotainer instead for now:

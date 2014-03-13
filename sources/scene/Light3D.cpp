@@ -149,7 +149,7 @@ namespace hpl {
 
 		//Log("Right type!\n");
 		
-		//Check if the object has all ready been added
+		//Check if the object has already been added
 		if(abStatic) 
 		{
 			if(m_setStaticCasters.find(apObject) != m_setStaticCasters.end()) return;
@@ -239,9 +239,9 @@ namespace hpl {
 
 	bool iLight3D::CheckObjectIntersection(iRenderable *apObject)
 	{
-		//Log("------ Checking %s with light %s -----\n",apObject->GetName().c_str(), GetName().c_str());
-		//Log(" BV: min: %s max: %s\n",	apObject->GetBoundingVolume()->GetMin().ToString().c_str(),
-		//								apObject->GetBoundingVolume()->GetMax().ToString().c_str());
+		Log("------ Checking %s with light %s -----\n",apObject->GetName().c_str(), GetName().c_str());
+		Log(" BV: min: %s max: %s\n",	apObject->GetBoundingVolume()->GetMin().ToString().c_str(),
+										apObject->GetBoundingVolume()->GetMax().ToString().c_str());
 		
 		//////////////////////////////////////////////////////////////
 		// If the lights cast shadows, cull objects that are in shadow
