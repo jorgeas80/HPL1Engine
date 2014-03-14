@@ -74,9 +74,11 @@ namespace hpl {
 		void SetAspect(float afAngle) { mfAspect = afAngle; mbProjectionUpdated = true;}
 		float GetAspect() { return mfAspect;}
 
+		// It's a float because it's a distance. See http://www.reallusion.com/iclone/Help/iClone3/10_Scene/Camera/Clipping_Planes_of_the_Camera.htm
 		void SetFarClipPlane(float afX) { mfFarClipPlane = afX; mbProjectionUpdated = true;}
 		float GetFarClipPlane() { return mfFarClipPlane;}
 		
+		// It's a float because it's a distance. See http://www.reallusion.com/iclone/Help/iClone3/10_Scene/Camera/Clipping_Planes_of_the_Camera.htm
 		void SetNearClipPlane(float afX) { mfNearClipPlane = afX; mbProjectionUpdated = true;}
 		float GetNearClipPlane() { return mfNearClipPlane;}
 		

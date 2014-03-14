@@ -334,12 +334,12 @@ namespace hpl {
 			apLowLevelGraphics->SetScissorActive(true);
 			apLowLevelGraphics->SetScissorRect(ClipRect);
 
-			if(apRenderSettings->mbLog)
+			//if(apRenderSettings->mbLog)
 				Log("Cliprect pos: (%d, %d) size: (%d, %d)\n",ClipRect.x, ClipRect.y, ClipRect.w, ClipRect.h);
 		}
 		else
 		{
-			if(apRenderSettings->mbLog)
+			//if(apRenderSettings->mbLog)
 				Log("Cliprect entire screen\n");
 		}
 		

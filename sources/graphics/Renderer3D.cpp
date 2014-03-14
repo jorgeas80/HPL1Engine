@@ -38,6 +38,9 @@
 #include "resources/GpuProgramManager.h"
 #include "graphics/GPUProgram.h"
 #include "graphics/RendererPostEffects.h"
+#include "graphics/RenderState.h"
+
+#include "IL_LightSource.h"
 
 namespace hpl {
 
@@ -897,6 +900,17 @@ namespace hpl {
 
 			cRenderNode* pNode = mpRenderList->GetRootNode(eRenderListDrawType_Normal,
 															eMaterialRenderType_Light, lLightCount);
+
+
+			// Check collision between camera and object
+			/*
+			cBoundingVolume * pObjBV = pNode->mpState->mpObject->GetBoundingVolume();
+			cBoundingVolume frustumBV = apCamera->GetFrustum()->GetBoundingVolume();
+
+			if (cMath::CheckCollisionBV(frustumBV, *pObjBV) && pLight->GetOpenILLightSource()->isEnabled()) {
+				pLight->GetOpenILLightSource()->stop();
+			}
+			*/
 
 			if(pLight->BeginDraw(&mRenderSettings, mpLowLevelGraphics))
 			{
