@@ -906,6 +906,20 @@ namespace hpl {
 															eMaterialRenderType_Light, lLightCount);
 
 
+
+			// Get the position of all the objects, to check if they are between light and camera
+			cVector3f vCameraPos = apCamera->GetPosition();
+			cVector3f vLightPos = pLight->GetLightPosition();
+
+			tRenderNodeSetIt it = pNode->m_setNodes.begin();
+			for(;it != pNode->m_setNodes.end(); ++it)
+			{
+				cRenderNode* pNodeLoop = *it;
+
+				cVector3f vObjPos = pNodeLoop->mpState->mpObject->GetWorldPosition();
+			}	
+
+
 			////////////////////////////////////////////////////// Check if we need to turn on/off an OpenIL lamp
 
 						// Check collision between camera and object

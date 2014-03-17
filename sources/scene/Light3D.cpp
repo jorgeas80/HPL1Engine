@@ -242,6 +242,14 @@ namespace hpl {
 		Log("------ Checking %s with light %s -----\n",apObject->GetName().c_str(), GetName().c_str());
 		Log(" BV: min: %s max: %s\n",	apObject->GetBoundingVolume()->GetMin().ToString().c_str(),
 										apObject->GetBoundingVolume()->GetMax().ToString().c_str());
+
+
+		if (apObject->IsVisible())
+			Log( "Object %s is visible\n", apObject->GetName().c_str());
+		else
+			Log("Object %s is not visible\n", apObject->GetName().c_str());
+
+		Log("------------------------------------------\n");
 		
 		//////////////////////////////////////////////////////////////
 		// If the lights cast shadows, cull objects that are in shadow
@@ -301,7 +309,7 @@ namespace hpl {
 		//Light is not in shadow, do not do any culling
 		else
 		{
-			//Log("No shadow, using BV\n");
+			Log("No shadow, using BV\n");
 			return CollidesWithBV(apObject->GetBoundingVolume());
 		}
 
