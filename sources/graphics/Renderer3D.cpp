@@ -902,105 +902,17 @@ namespace hpl {
 			Log("Now we render all the objects affected by light %s. We should check if any of them is in front of the cam\n", 
 				pLight->GetName().c_str());
 
+			Log("**********************************************************\n");
+
 			cRenderNode* pNode = mpRenderList->GetRootNode(eRenderListDrawType_Normal,
 															eMaterialRenderType_Light, lLightCount);
 
 
 
-			// Get the position of all the objects, to check if they are between light and camera
-			cVector3f vCameraPos = apCamera->GetPosition();
-			cVector3f vLightPos = pLight->GetLightPosition();
+			// OK, WE CAN GET THE POSITION OF THE CAMERA, THE POSITION OF THE LIGHT WHEN IT'S IN CAMERA RANGE AND 
+			// POSITION OF RENDERABLE OBJECTS. BUT THIS METHOD IS EXECUTED JUST WHEN WE ARE RENDERING THE WORLD,
+			// NOT UPDATED ON EACH GAME STEP, AS WE NEED
 
-			tRenderNodeSetIt it = pNode->m_setNodes.begin();
-			for(;it != pNode->m_setNodes.end(); ++it)
-			{
-				cRenderNode* pNodeLoop = *it;
-
-				cVector3f vObjPos = pNodeLoop->mpState->mpObject->GetWorldPosition();
-			}	
-
-
-			////////////////////////////////////////////////////// Check if we need to turn on/off an OpenIL lamp
-
-						// Check collision between camera and object
-			/*
-			cBoundingVolume * pObjBV = pNode->mpState->mpObject->GetBoundingVolume();
-			cBoundingVolume frustumBV = apCamera->GetFrustum()->GetBoundingVolume();
-
-			if (cMath::CheckCollisionBV(frustumBV, *pObjBV) && pLight->GetOpenILLightSource()->isEnabled()) {
-				pLight->GetOpenILLightSource()->stop();
-			}
-			*/
-
-			/*
-			cVector3f vCameraPos = apCamera->GetPosition();
-			cVector3f vLightPos = pLight->GetLightPosition();
-
-			// Position where the OpenIL LightSource will be created
-			cVector3f vToLight = vCameraPos - vLightPos;
-
-			float fDist = cMath::Vector3Dist(vCameraPos, vLightPos);
-
-			// TURN ON lamp
-			// TODO: Is GetFarAttenuation the right method?
-			if (fDist <= pLight->GetFarAttenuation() && pLight->IsVisible() && pLight->IsActive()) {
-
-				Log("Player position: %s\n", vCameraPos.ToString());
-				Log("Light %s position: %s\n", pLight->GetName().c_str(), vLightPos.ToString());
-				Log("Position to create the OpenIL LightSource: %s\n", vToLight.ToString());
-
-				// The lamp is already lit on
-				if (!pLight->GetOpenILLightSource()->isEnabled()) {
-					// TODO: A light attenuation really goes from 0 to inf, but 100 meters looks like a good-enough maximum
-					// to do the range change
-					float fOpenILRadius = openil::GetOpenILRadius(pLight->GetFarAttenuation(), 0, 100.0f);
-
-					if (pLight->GetLightType() == eLight3DType_Point) {
-						
-						pLight->GetOpenILLightSource()->setPointLight(openil::IL_Vector3D(vToLight.x, vToLight.y, vToLight.z), fOpenILRadius);
-
-						Log("OpenIL point light with radius %f created\n", fOpenILRadius);
-					}
-					
-					else if (pLight->GetLightType() == eLight3DType_Spot) { 
-
-						//pLight->GetOpenILLightSource()->setPointLight(openil::IL_Vector3D(vToLight.x, vToLight.y, vToLight.z), fOpenILRadius);
-
-						// Check dynamic_cast here http://www.cplusplus.com/doc/tutorial/typecasting/
-						cLight3DSpot * pSpotLight = dynamic_cast<cLight3DSpot*>(pLight);
-
-						// TODO: Is this the right way to calculate the spot direction?
-						// I did it following this http://gamedev.stackexchange.com/questions/71630/derive-direction-in-which-a-spot-light-emites-its-light-from-a-projection-matrix
-						cVector3f vDefaultPos(0, 0, -1);
-						cVector3f vLightPos = cMath::MatrixMul(pSpotLight->GetViewMatrix(), vDefaultPos);
-
-						pLight->GetOpenILLightSource()->setSpotLight(openil::IL_Vector3D(vToLight.x, vToLight.y, vToLight.z), 
-							fOpenILRadius, openil::IL_Vector3D(vLightPos.x, vLightPos.y, vLightPos.z), pSpotLight->GetFOV());
-
-						Log("OpenIL spot light with radius %f, direction %s and FOV %f created\n", fOpenILRadius, vLightPos.ToString(), pSpotLight->GetFOV());
-					}
-
-					pLight->GetOpenILLightSource()->play();
-				}
-			}
-
-
-			// TURN OFF
-			else {
-				pLight->GetOpenILLightSource()->stop();
-
-				Log("Distance of player to light: %f\n", fDist);
-				Log("Light radius: %f\n", pLight->GetFarAttenuation());
-
-				if (!pLight->IsActive())
-					Log("Light %s is not active\n", pLight->GetName().c_str());
-
-				if (!pLight->IsVisible())
-					Log("Light %s is not visible\n", pLight->GetName().c_str());
-			}
-
-			*/
-			////////////////////////////////////////////////////////
 
 
 			if(pLight->BeginDraw(&mRenderSettings, mpLowLevelGraphics))
@@ -1010,6 +922,26 @@ namespace hpl {
 			pLight->EndDraw(&mRenderSettings, mpLowLevelGraphics);
 
 			lLightCount++;
+
+			// Get the position of all the objects, to check if they are between light and camera
+			cVector3f vCameraPos = apCamera->GetPosition();
+			cVector3f vLightPos = pLight->GetLightPosition();
+
+			Log("Camera position: %s\n", vCameraPos.ToString().c_str());
+			Log("Light position: %s\n", vLightPos.ToString().c_str());
+
+			Log("Camera render list size: %d\n", mpRenderList->GetObjectNum());
+
+			cRenderableIterator objectIt = mpRenderList->GetObjectIt();
+			while(objectIt.HasNext())
+			{
+				iRenderable* pObject = objectIt.Next();
+				cVector3f vPosObj = pObject->GetWorldPosition();
+				Log("Position of object of the list: %s\n", vPosObj.ToString());
+			}
+
+			Log("**********************************************************\n");
+
 		}
 	}
 
