@@ -239,17 +239,9 @@ namespace hpl {
 
 	bool iLight3D::CheckObjectIntersection(iRenderable *apObject)
 	{
-		Log("------ Checking %s with light %s -----\n",apObject->GetName().c_str(), GetName().c_str());
-		Log(" BV: min: %s max: %s\n",	apObject->GetBoundingVolume()->GetMin().ToString().c_str(),
-										apObject->GetBoundingVolume()->GetMax().ToString().c_str());
-
-
-		if (apObject->IsVisible())
-			Log( "Object %s is visible\n", apObject->GetName().c_str());
-		else
-			Log("Object %s is not visible\n", apObject->GetName().c_str());
-
-		Log("------------------------------------------\n");
+		//Log("------ Checking %s with light %s -----\n",apObject->GetName().c_str(), GetName().c_str());
+		//Log(" BV: min: %s max: %s\n",	apObject->GetBoundingVolume()->GetMin().ToString().c_str(),
+		//								apObject->GetBoundingVolume()->GetMax().ToString().c_str());
 		
 		//////////////////////////////////////////////////////////////
 		// If the lights cast shadows, cull objects that are in shadow
@@ -342,12 +334,12 @@ namespace hpl {
 			apLowLevelGraphics->SetScissorActive(true);
 			apLowLevelGraphics->SetScissorRect(ClipRect);
 
-			//if(apRenderSettings->mbLog)
+			if(apRenderSettings->mbLog)
 				Log("Cliprect pos: (%d, %d) size: (%d, %d)\n",ClipRect.x, ClipRect.y, ClipRect.w, ClipRect.h);
 		}
 		else
 		{
-			//if(apRenderSettings->mbLog)
+			if(apRenderSettings->mbLog)
 				Log("Cliprect entire screen\n");
 		}
 		

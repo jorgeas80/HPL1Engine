@@ -819,14 +819,11 @@ namespace hpl {
 									cMeshEntity *apMeshEntity, cWorld3D *apWorld)
 	{
 		iLight3D *pLight = NULL;
-
-		tString sTmpStr = sNamePrefix + "_" + apMeshLight->msName;
 		
 		////////////////////////////////
 		//Spot
 		if(apMeshLight->mType == eLight3DType_Spot)
 		{
-			Log("cMesh::CreateLightInWorld --> Create light spot: %s\n", sTmpStr.c_str());
 			cLight3DSpot *pLightSpot = apWorld->CreateLightSpot(sNamePrefix + "_" + apMeshLight->msName);
 			pLightSpot->SetDiffuseColor(apMeshLight->mColor);
 			pLightSpot->SetFarAttenuation(apMeshLight->mfRadius);
@@ -840,7 +837,6 @@ namespace hpl {
 		//Point
 		else if(apMeshLight->mType == eLight3DType_Point)
 		{
-			Log("cMesh::CreateLightInWorld --> Create light point: %s\n", sTmpStr.c_str());
 			cLight3DPoint *pLightPoint = apWorld->CreateLightPoint(sNamePrefix + "_" + apMeshLight->msName);
 			pLightPoint->SetDiffuseColor(apMeshLight->mColor);
 			pLightPoint->SetFarAttenuation(apMeshLight->mfRadius);
@@ -855,13 +851,7 @@ namespace hpl {
 			return NULL;
 		}
 
-
-		// HERE, YOU KNOW THE LIGHT POSITION IN THE WORLD!!
-		Log("cMesh::CreateLightInWorld --> Light position before SetMatrix: %s\n",
-			pLight->GetWorldPosition().ToString());
 		pLight->SetMatrix(apMeshLight->m_mtxTransform);
-		Log("cMesh::CreateLightInWorld --> Light position after SetMatrix: %s\n",
-			pLight->GetWorldPosition().ToString());
 		
 		apMeshEntity->AttachEntityToParent(pLight, apMeshLight->msParent);
 		

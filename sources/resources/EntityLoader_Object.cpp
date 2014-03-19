@@ -54,8 +54,6 @@
 #include "haptic/LowLevelHaptic.h"
 #include "haptic/HapticShape.h"
 
-#include "IL_LightSource.h"
-
 namespace hpl {
 
 	//////////////////////////////////////////////////////////////////////////
@@ -520,8 +518,6 @@ namespace hpl {
 		{
 			iLight3D* pLight = mpMesh->CreateLightInWorld(asName,mpMesh->GetLight(i),mpEntity,apWorld);
 			if(pLight) mvLights.push_back(pLight);
-
-			Log("Light position: %s\n", pLight->GetLightPosition().ToString());
 		}
 		
 		//Iterate light elements
@@ -535,7 +531,6 @@ namespace hpl {
 				Error("Couldn't find light %s among entity %s type: %s lights\n",sName.c_str(),	asName.c_str(),	asFileName.c_str());
 				continue;
 			}
-			Log("LIGHT FOUND IN ENTITY FILE: %s\n", sName.c_str());
 
 			pLight->SetFarAttenuation(cString::ToFloat(pLightElem->Attribute("Attenuation"),
 															pLight->GetFarAttenuation()));
@@ -546,8 +541,6 @@ namespace hpl {
 
 			if(pLight->GetLightType() == eLight3DType_Spot)
 			{
-
-				Log("+++ LIGHT SPOT FOUND");
 				cLight3DSpot *pSpotLight = static_cast<cLight3DSpot*>(pLight);
 
 				pSpotLight->SetFOV(cString::ToFloat(pLightElem->Attribute("FOV"),

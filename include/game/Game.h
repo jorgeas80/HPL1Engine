@@ -21,7 +21,6 @@
 
 #include "system/SystemTypes.h"
 
-
 namespace hpl {
 
 	class cUpdater;
@@ -188,12 +187,6 @@ namespace hpl {
 
 		void SetLimitFPS(bool abX){ mbLimitFPS = abX;}
 		bool GetLimitFPS(){ return mbLimitFPS;}
-
-		// OpenIL public methods
-		//openil::IL_ref_ptr<openil::IL_LightSource> CreateLightPoint(const cVector3f& avPos, const float& radio);
-		//openil::IL_ref_ptr<openil::IL_LightSource> CreateLightSpot();
-		//void DestroyLight(openil::IL_ref_ptr<openil::IL_LightSource> apLight);
-		//openil::IL_ref_ptr<openil::IL_LightSource> GetLight();
 
 	private:
 		bool mbUseOpenIL;

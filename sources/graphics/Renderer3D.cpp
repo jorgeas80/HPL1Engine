@@ -40,12 +40,6 @@
 #include "graphics/RendererPostEffects.h"
 
 
-#include "graphics/RenderState.h"
-#include "scene/Light3DSpot.h"
-#include "scene/Light3DPoint.h"
-#include "IL_LightSource.h"
-
-
 namespace hpl {
 
 	//////////////////////////////////////////////////////////////////////////
@@ -892,28 +886,14 @@ namespace hpl {
 			if(mpRenderList->GetLightObjects(lLightCount)==0)
 			{
 				lLightCount++;
-
-				Log("The light %s does not affect any object\n", pLight->GetName().c_str());
 				continue;
 			}
 
 			if(mbLog) Log("-----Light %s/%d ------\n",pLight->GetName().c_str(), (size_t)pLight);
 
-			Log("Now we render all the objects affected by light %s. We should check if any of them is in front of the cam\n", 
-				pLight->GetName().c_str());
-
-			Log("**********************************************************\n");
 
 			cRenderNode* pNode = mpRenderList->GetRootNode(eRenderListDrawType_Normal,
 															eMaterialRenderType_Light, lLightCount);
-
-
-
-			// OK, WE CAN GET THE POSITION OF THE CAMERA, THE POSITION OF THE LIGHT WHEN IT'S IN CAMERA RANGE AND 
-			// POSITION OF RENDERABLE OBJECTS. BUT THIS METHOD IS EXECUTED JUST WHEN WE ARE RENDERING THE WORLD,
-			// NOT UPDATED ON EACH GAME STEP, AS WE NEED
-
-
 
 			if(pLight->BeginDraw(&mRenderSettings, mpLowLevelGraphics))
 			{
@@ -922,26 +902,6 @@ namespace hpl {
 			pLight->EndDraw(&mRenderSettings, mpLowLevelGraphics);
 
 			lLightCount++;
-
-			// Get the position of all the objects, to check if they are between light and camera
-			cVector3f vCameraPos = apCamera->GetPosition();
-			cVector3f vLightPos = pLight->GetLightPosition();
-
-			Log("Camera position: %s\n", vCameraPos.ToString().c_str());
-			Log("Light position: %s\n", vLightPos.ToString().c_str());
-
-			Log("Camera render list size: %d\n", mpRenderList->GetObjectNum());
-
-			cRenderableIterator objectIt = mpRenderList->GetObjectIt();
-			while(objectIt.HasNext())
-			{
-				iRenderable* pObject = objectIt.Next();
-				cVector3f vPosObj = pObject->GetWorldPosition();
-				Log("Position of object of the list: %s\n", vPosObj.ToString());
-			}
-
-			Log("**********************************************************\n");
-
 		}
 	}
 
