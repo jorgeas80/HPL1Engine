@@ -260,15 +260,22 @@ namespace hpl {
 		// Init OpenIL, if needed
 		mbUseOpenIL = aVars.GetBool("UseLightEngine", false);
 		if (mbUseOpenIL) {
-			openil::initLightEngine();
 			Log("Initializing OpenIL Light Engine\n");
+
+			openil::initLightEngine();
+			bool bEffectsLoaded = openil::loadEffectsFromFile ("effects.txt");
+
+			// Check
+			if (!openil::isEnableLightEngine()) 
+				Log("Something wrong happened. OpenIL not initialized\n");
+
+			if (!bEffectsLoaded)
+				Log("Could not find 'effects.txt', to load OpenIL effects\n");
+			
+
+			Log("--------------------------------------------------------\n\n");
 		}
 
-		// Check
-		if (!openil::isEnableLightEngine()) 
-			Log("Something wrong happened. OpenIL not initialized\n");
-
-		Log("--------------------------------------------------------\n\n");
 
 		Log("Initializing Game Module\n");
 		Log("--------------------------------------------------------\n");
